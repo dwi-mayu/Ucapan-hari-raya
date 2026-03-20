@@ -1,273 +1,158 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Selamat Idul Fitri</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet"><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eid Mubarak - Dwi Mayu Sekeluarga</title>
+    <style>
+        :root {
+            --primary-orange: #FF8C00;
+            --soft-gold: #FFD700;
+        }
 
-body{
-  height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  color:white;
-}
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: #0f0f0f;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
 
-.center{text-align:center}
-.hidden{display:none}
+        /* Background image dengan overlay gelap */
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('background.jpg') no-repeat center center/cover;
+            filter: brightness(0.4);
+            z-index: -1;
+        }
 
-.envelope{
-  width:220px;height:130px;
-  background:linear-gradient(45deg,#00c9a7,#92fe9d);
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-weight:bold;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-  animation:float 3s ease-in-out infinite;
-}
+        /* Glassmorphism Card */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeInScale 1.5s ease-out;
+        }
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
-.card{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  padding:30px;
-  border-radius:20px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.5);
-  transform:scale(0.8);
-  opacity:0;
-  transition:0.8s;
-  max-width:320px;
-}
+        .icon-moon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: floating 3s ease-in-out infinite;
+        }
 
-.card.show{
-  transform:scale(1);
-  opacity:1;
-}
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
 
-h1{font-size:1.8rem}
-h2{font-weight:300;margin-top:8px}
-p{margin-top:10px;font-size:0.9rem}
+        h1 {
+            font-size: 2.2rem;
+            margin: 10px 0;
+            background: linear-gradient(to right, var(--soft-gold), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.btn{
-  margin-top:12px;
-  padding:10px 18px;
-  border:none;
-  border-radius:20px;
-  background:linear-gradient(45deg,#ff9a9e,#fad0c4);
-  cursor:pointer;
-}
+        .from-text {
+            font-size: 1.1rem;
+            margin-top: 25px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+        }
 
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  pointer-events:none;
-}
-</style></head><body><canvas id="confetti"></canvas>
+        .btn-play {
+            margin-top: 30px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary-orange);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-<div id="start" class="envelope center" onclick="openCard()">
-  Buka Ucapan ✉️
-</div><div id="card" class="card center hidden">
-  <h1>🌙 Selamat Idul Fitri</h1>
-  <h2 id="nama"></h2>
-  <p id="pesan"></p><button class="btn" onclick="playMusic()">🎵 Musik</button>
-<button class="btn" onclick="shareWA()">📤 Share</button>
+        .btn-play:hover { transform: scale(1.1); background: var(--soft-gold); }
 
-</div><audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        /* Canvas untuk partikel bintang */
+        #starCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
+    </style>
+</head>
+<body>
+    <canvas id="starCanvas"></canvas>
+    <div class="bg-overlay"></div>
 
-<script>
-const url = new URLSearchParams(window.location.search);
-const to = url.get('to') || 'Sahabat';
+    <div class="card">
+        <div class="icon-moon">🌙</div>
+        <p style="letter-spacing: 3px;">SELAMAT HARI RAYA</p>
+        <h1>Idul Fitri 1447 H</h1>
+        <p style="opacity: 0.8; line-height: 1.6;">
+            "Semoga keberkahan dan kebahagiaan menyertai setiap langkah kita di hari yang suci ini."
+        </p>
+        
+        <div class="from-text">
+            Dwi Mayu Sekeluarga
+        </div>
 
-const listPesan = [
-  "Taqabbalallahu minna wa minkum",
-  "Mohon maaf lahir dan batin",
-  "Semoga penuh berkah dan kebahagiaan",
-  "Semoga hati kembali suci"
-];
+        <button class="btn-play" onclick="toggleMusic()">🎵 Putar Musik</button>
+    </div>
 
-document.getElementById("nama").innerText = "Untuk: " + to;
-document.getElementById("pesan").innerText = listPesan[Math.floor(Math.random()*listPesan.length)];
+    <audio id="eidMusic" loop>
+        <source src="musik-raya.mp3" type="audio/mpeg">
+    </audio>
 
-function openCard(){
-  document.getElementById("start").classList.add("hidden");
-  const card = document.getElementById("card");
-  card.classList.remove("hidden");
-  setTimeout(()=>card.classList.add("show"),100);
-  startConfetti();
-}
+    <script>
+        // Musik Toggle
+        const music = document.getElementById("eidMusic");
+        function toggleMusic() {
+            if (music.paused) { music.play(); } else { music.pause(); }
+        }
 
-function playMusic(){
-  document.getElementById("music").play();
-}
+        // Animasi Partikel Bintang
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-function shareWA(){
-  const text = encodeURIComponent("Selamat Idul Fitri " + to + " 🌙\\n" + window.location.href);
-  window.open("https://wa.me/?text=" + text);
-}
+        let stars = [];
+        for(let i=0; i<150; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2,
+                speed: Math.random() * 0.5
+            });
+        }
 
-// CONFETTI
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let pieces=[];
-
-function startConfetti(){
-  pieces=[];
-  for(let i=0;i<120;i++){
-    pieces.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      size:Math.random()*4+2,
-      speed:Math.random()*2+1
-    });
-  }
-  animate();
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  pieces.forEach(p=>{
-    ctx.fillRect(p.x,p.y,p.size,p.size);
-    p.y+=p.speed;
-    if(p.y>canvas.height)p.y=0;
-  });
-  requestAnimationFrame(animate);
-}
-</script></body>
-</html>      background:rgba(255,255,255,0.08);
-      backdrop-filter:blur(15px);
-      padding:40px;
-      border-radius:20px;
-      text-align:center;
-      box-shadow:0 10px 40px rgba(0,0,0,0.5);
-      transform:scale(0.7);
-      opacity:0;
-      transition:1s;
-      max-width:350px;
-    }
-
-    .card.show{
-      transform:scale(1);
-      opacity:1;
-    }
-
-    h1{font-size:2.2rem}
-    h2{font-weight:300;margin-top:10px}
-    p{margin-top:15px;font-size:0.95rem}
-
-    .btn{
-      margin-top:15px;
-      padding:10px 20px;
-      border:none;
-      border-radius:25px;
-      background:linear-gradient(45deg,#ff9a9e,#fad0c4);
-      cursor:pointer;
-    }
-
-    canvas{
-      position:fixed;
-      top:0;
-      left:0;
-      pointer-events:none;
-    }
-
-    .moon{
-      position:absolute;
-      top:10%;
-      right:10%;
-      width:80px;
-      height:80px;
-      background:white;
-      border-radius:50%;
-      box-shadow:0 0 30px white;
-      opacity:0.8;
-    }
-
-  </style></head><body><canvas id="confetti"></canvas>
-
-<div class="moon"></div><div id="start" class="envelope" onclick="openCard()">
-  Buka Ucapan ✉️
-</div><div id="card" class="card hidden">
-  <h1>🌙 Selamat Idul Fitri</h1>
-  <h2 id="name"></h2>
-  <p id="msg"></p><button class="btn" onclick="playMusic()">🔊 Putar Takbiran</button>
-<button class="btn" onclick="shareWA()">📤 Share WhatsApp</button>
-
-</div><audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
-
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const nama = params.get('to') || 'Sahabat';
-
-  const pesan = [
-    "Taqabbalallahu minna wa minkum",
-    "Mohon maaf lahir dan batin",
-    "Semoga hati kembali suci",
-    "Semoga penuh berkah dan kebahagiaan"
-  ];
-
-  document.getElementById("name").innerText = "Untuk: " + nama;
-  document.getElementById("msg").innerText = pesan[Math.floor(Math.random()*pesan.length)];
-
-  function openCard(){
-    document.getElementById("start").classList.add("hidden");
-    const card = document.getElementById("card");
-    card.classList.remove("hidden");
-    setTimeout(()=>card.classList.add("show"),100);
-    startConfetti();
-    playMusic();
-  }
-
-  function playMusic(){
-    document.getElementById("music").play();
-  }
-
-  function shareWA(){
-    const text = encodeURIComponent("Selamat Idul Fitri " + nama + " 🌙\\n" + window.location.href);
-    window.open("https://wa.me/?text=" + text);
-  }
-
-  // CONFETTI
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let pieces = [];
-
-  function startConfetti(){
-    for(let i=0;i<200;i++){
-      pieces.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        size:Math.random()*6+2,
-        speed:Math.random()*3+1
-      });
-    }
-    animate();
-  }
-
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    pieces.forEach(p=>{
-      ctx.fillRect(p.x,p.y,p.size,p.size);
-      p.y += p.speed;
-      if(p.y > canvas.height) p.y = 0;
-    });
-    requestAnimationFrame(animate);
-  }
-</script></body>
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+                ctx.fill();
+                s.y += s.speed;
+                if(s.y > canvas.height) s.y = 0;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
 </html>
