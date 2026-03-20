@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selamat Idul Fitri</title>  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+    body{
+      height:100vh;
+      background: radial-gradient(circle at top,#0f2027,#203a43,#2c5364);
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      color:white;
+    }
+
+    .hidden{display:none}
+
+    .envelope{
+      width:230px;height:140px;
+      background:linear-gradient(45deg,#00c9a7,#92fe9d);
+      border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+      animation:float 3s ease-in-out infinite;
+      font-weight:bold;
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-15px)}
+    }
+
+    .card{
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(15px);
+      padding:40px;
+      border-radius:20px;
+      text-align:center;
+      box-shadow:0 10px 40px rgba(0,0,0,0.5);
+      transform:scale(0.7);
+      opacity:0;
+      transition:1s;
+      max-width:350px;
+    }
+
+    .card.show{
+      transform:scale(1);
+      opacity:1;
+    }
+
+    h1{font-size:2.2rem}
+    h2{font-weight:300;margin-top:10px}
+    p{margin-top:15px;font-size:0.95rem}
+
+    .btn{
+      margin-top:15px;
+      padding:10px 20px;
+      border:none;
+      border-radius:25px;
+      background:linear-gradient(45deg,#ff9a9e,#fad0c4);
+      cursor:pointer;
+    }
+
+    canvas{
+      position:fixed;
+      top:0;
+      left:0;
+      pointer-events:none;
+    }
+
+    .moon{
+      position:absolute;
+      top:10%;
+      right:10%;
+      width:80px;
+      height:80px;
+      background:white;
+      border-radius:50%;
+      box-shadow:0 0 30px white;
+      opacity:0.8;
+    }
+
+  </style></head><body><canvas id="confetti"></canvas>
+
+<div class="moon"></div><div id="start" class="envelope" onclick="openCard()">
+  Buka Ucapan ✉️
+</div><div id="card" class="card hidden">
+  <h1>🌙 Selamat Idul Fitri</h1>
+  <h2 id="name"></h2>
+  <p id="msg"></p><button class="btn" onclick="playMusic()">🔊 Putar Takbiran</button>
+<button class="btn" onclick="shareWA()">📤 Share WhatsApp</button>
+
+</div><audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const nama = params.get('to') || 'Sahabat';
+
+  const pesan = [
+    "Taqabbalallahu minna wa minkum",
+    "Mohon maaf lahir dan batin",
+    "Semoga hati kembali suci",
+    "Semoga penuh berkah dan kebahagiaan"
+  ];
+
+  document.getElementById("name").innerText = "Untuk: " + nama;
+  document.getElementById("msg").innerText = pesan[Math.floor(Math.random()*pesan.length)];
+
+  function openCard(){
+    document.getElementById("start").classList.add("hidden");
+    const card = document.getElementById("card");
+    card.classList.remove("hidden");
+    setTimeout(()=>card.classList.add("show"),100);
+    startConfetti();
+    playMusic();
+  }
+
+  function playMusic(){
+    document.getElementById("music").play();
+  }
+
+  function shareWA(){
+    const text = encodeURIComponent("Selamat Idul Fitri " + nama + " 🌙\\n" + window.location.href);
+    window.open("https://wa.me/?text=" + text);
+  }
+
+  // CONFETTI
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let pieces = [];
+
+  function startConfetti(){
+    for(let i=0;i<200;i++){
+      pieces.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        size:Math.random()*6+2,
+        speed:Math.random()*3+1
+      });
+    }
+    animate();
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.fillRect(p.x,p.y,p.size,p.size);
+      p.y += p.speed;
+      if(p.y > canvas.height) p.y = 0;
+    });
+    requestAnimationFrame(animate);
+  }
+</script></body>
+</html>
