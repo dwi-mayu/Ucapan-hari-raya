@@ -3,146 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Idul Fitri 1447 H - Dwi Mayu Sekeluarga</title>
-
+    
     <meta property="og:title" content="Selamat Idul Fitri 1447 H - Dwi Mayu Sekeluarga">
     <meta property="og:description" content="Klik untuk membuka pesan spesial dan doa dari kami sekeluarga. ✨🌙">
-    <meta property="og:image" content="https://raw.githubusercontent.com/USERNAME_KAMU/Ucapan-hari-raya/main/background.jpg">
-    <meta property="og:url" content="https://USERNAME_KAMU.github.io/Ucapan-hari-raya/">
-    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://raw.githubusercontent.com/dwi-mayu/Ucapan-hari-raya/main/background.jpg">
 
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --primary-gold: #FFD700;
             --deep-orange: #FF8C00;
-            --glass-white: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.1);
+            --bg-dark: #050505;
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
-            background: #050505; color: white;
-            overflow: hidden;
+            background: var(--bg-dark); color: white; overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Overlay Awal */
-        #overlay {
+        /* Overlay & Tombol Umum */
+        #overlay, #closing-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0f0f0f; z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: 1s ease-out;
+            transition: 1.5s ease;
         }
 
-        .btn-open {
+        .btn-open, .btn-close {
             background: none; border: 2px solid var(--primary-gold);
-            color: var(--primary-gold); padding: 15px 30px;
-            font-size: 1.2rem; border-radius: 50px; cursor: pointer;
-            transition: 0.3s; animation: pulse 2s infinite;
+            color: var(--primary-gold); padding: 12px 35px;
+            font-size: 1rem; border-radius: 50px; cursor: pointer;
+            margin-top: 25px; transition: 0.3s;
+            font-family: 'Poppins', sans-serif; font-weight: 600;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
-            70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        .btn-open:hover, .btn-close:hover { background: rgba(255, 215, 0, 0.1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+
+        /* Bagian Penutup (Responsive & Centered) */
+        #closing-overlay {
+            display: none; opacity: 0; z-index: 110;
+            text-align: center;
+            padding: 30px; /* Padding agar tidak mentok pinggir di HP kecil */
+            box-sizing: border-box; /* Pastikan padding tidak nambah lebar */
         }
 
-        /* Main Content */
+        /* Container khusus konten penutup agar Flexbox bekerja sempurna */
+        .closing-content {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            width: 100%; max-width: 500px; /* Batasi lebar di desktop */
+        }
+
+        /* Main Scene */
         .main-container {
             height: 100vh; display: flex; justify-content: center; align-items: center;
             background: url('background.jpg') center/cover no-repeat;
-            position: relative;
+            position: relative; opacity: 0; transition: 2s ease;
         }
 
         .main-container::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
         }
 
         .glass-card {
             position: relative; z-index: 2;
-            background: var(--glass-white);
-            backdrop-filter: blur(15px);
+            background: var(--glass); backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px; padding: 40px 20px;
+            border-radius: 30px; padding: 35px 25px;
             width: 85%; max-width: 450px; text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            animation: slideUp 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
 
         .script-font {
             font-family: 'Great Vibes', cursive;
-            font-size: 3.5rem; color: var(--primary-gold);
-            margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            color: var(--primary-gold);
+            margin: 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            /* Responsive Font Size */
+            font-size: calc(2.2rem + 1vw); 
+        }
+
+        #typing-text { 
+            font-size: 0.95rem; line-height: 1.8; min-height: 180px; 
+            margin: 20px 0; color: #f0f0f0; 
         }
 
         .signature {
-            margin-top: 30px; font-weight: 600;
+            margin-top: 15px; padding-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.2);
-            padding-top: 15px; font-size: 1.1rem;
-            color: var(--deep-orange);
+            opacity: 0; transition: 1.5s ease;
         }
 
+        .signature.show { opacity: 1; }
+        
+        .btn-close { opacity: 0; pointer-events: none; transition: 1s ease; }
+        .btn-close.show { opacity: 1; pointer-events: auto; }
+
         #bgCanvas { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        
+        /* Animasi Mengambang untuk Ikon */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
 
     <div id="overlay">
-        <div style="font-size: 50px; margin-bottom: 20px;">🌙</div>
-        <button class="btn-open" onclick="startExperience()">Buka Pesan</button>
+        <div style="font-size: 60px; margin-bottom: 20px; animation: float 3s infinite;">🌙</div>
+        <button class="btn-open" onclick="startExperience()">Buka Pesan Spesial</button>
     </div>
 
-    <div class="main-container">
+    <div class="main-container" id="main-container">
         <canvas id="bgCanvas"></canvas>
         <div class="glass-card">
-            <p style="margin: 0; letter-spacing: 4px; font-size: 0.7rem; color: var(--primary-gold);">TAQABBALALLAHU MINNA WA MINKUM</p>
-            <h1 class="script-font">Eid Mubarak</h1>
-            <p style="font-weight: 600; margin-top: -10px;">1 Syawal 1447 H</p>
+            <p style="letter-spacing: 3px; font-size: 0.7rem; color: var(--primary-gold); margin-bottom: 5px;">KAMI SEKELUARGA MENGUCAPKAN</p>
+            <h1 class="script-font">Selamat Idul Fitri</h1>
+            <p style="font-weight: 600; margin-top: -5px; font-size: 1.1rem;">1 Syawal 1447 H</p>
             
-            <p style="font-size: 0.95rem; margin: 15px 0;">
-                Tangan tak sampai menjabat, kaki tak sempat melangkah. Mohon Maaf Lahir dan Batin atas segala khilaf dan lisan yang tak terjaga.
-            </p>
+            <div id="typing-text"></div>
 
-            <div style="font-style: italic; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px;">
-                "Semoga Allah SWT menerima amal ibadah kita dan mempertemukan kita kembali dengan Ramadhan berikutnya."
-            </div>
-
-            <div class="signature">
-                <span style="font-weight: 300; font-size: 0.8rem; display: block; color: white;">Salam hangat,</span>
-                Dwi Mayu & Keluarga
+            <div class="signature" id="signature">
+                <strong style="color: var(--primary-gold); font-size: 1.25rem;">Dwi Mayu & Keluarga</strong>
+                <br>
+                <button class="btn-close" id="btnClose" onclick="closeExperience()">Selesai Membaca</button>
             </div>
         </div>
     </div>
 
-    <audio id="eidMusic" loop>
-        <source src="musik-raya.mp3" type="audio/mpeg">
-    </audio>
+    <div id="closing-overlay">
+        <div class="closing-content">
+            <h2 class="script-font">Taqabbalallahu Minna wa Minkum</h2>
+            <p style="font-size: 0.95rem; margin-top: 15px; line-height: 1.6; color: #eee; max-width: 320px;">
+                Semoga Allah melimpahkan berkah dan mempertemukan kita kembali di hari kemenangan berikutnya.
+            </p>
+            <div style="margin-top: 35px; font-size: 45px; animation: float 3s infinite ease-in-out;">🤲✨</div>
+        </div>
+    </div>
+
+    <audio id="eidMusic" loop><source src="musik-raya.mp3" type="audio/mpeg"></audio>
 
     <script>
+        const pesan = "Taqabbalallahu minna wa minkum, shiyamana wa shiyamakum. Seiring gema takbir yang berkumandang, kami memohon maaf lahir dan batin atas segala khilaf, lisan yang tak terjaga, maupun hati yang pernah terluka.\n\nSemoga Allah SWT menerima seluruh amal ibadah kita dan melimpahkan keberkahan serta kesehatan bagi kita semua. Selamat merayakan hari kemenangan bersama keluarga tercinta.";
+        let i = 0;
+
+        function typeWriter() {
+            if (i < pesan.length) {
+                let char = pesan.charAt(i);
+                document.getElementById("typing-text").innerHTML += char === "\n" ? "<br>" : char;
+                i++; setTimeout(typeWriter, 45);
+            } else {
+                document.getElementById("signature").classList.add("show");
+                document.getElementById("btnClose").classList.add("show");
+            }
+        }
+
         function startExperience() {
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('overlay').style.display = 'none';
+                document.getElementById('main-container').style.opacity = '1';
                 document.getElementById('eidMusic').play();
+                typeWriter();
             }, 1000);
         }
 
-        // Script Bintang Sederhana
+        function closeExperience() {
+            document.getElementById('main-container').style.opacity = '0';
+            const closing = document.getElementById('closing-overlay');
+            closing.style.display = 'flex'; // Ganti Flex agar centered
+            setTimeout(() => {
+                closing.style.opacity = '1';
+                // Audio Fade Out
+                let vol = 1;
+                const fadeAudio = setInterval(() => {
+                    if (vol > 0.05) { vol -= 0.05; document.getElementById('eidMusic').volume = vol; }
+                    else { clearInterval(fadeAudio); document.getElementById('eidMusic').pause(); }
+                }, 150);
+            }, 500);
+        }
+
+        // Bintang Background
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        let p = [];
-        for(let i=0; i<70; i++) p.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2, v: Math.random()*0.5});
-        function anim() {
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let stars = [];
+        for(let j=0; j<80; j++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, v: Math.random()*0.3});
+        function draw() {
             ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="white";
-            p.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.y-=s.v; if(s.y<0) s.y=canvas.height; });
-            requestAnimationFrame(anim);
+            stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.y-=s.v; if(s.y<0) s.y=canvas.height; });
+            requestAnimationFrame(draw);
         }
-        anim();
+        draw();
     </script>
 </body>
 </html>
